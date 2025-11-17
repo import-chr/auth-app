@@ -1,0 +1,42 @@
+services:
+
+  app:
+    build: ./
+    volumes:
+      - ./src:/usr/src/app/src
+    ports:
+      - '3000:3000'
+    command: sh -c 'npx prisma generate && npm run start:dev'
+    environment:
+      - PORT=${PORT}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - DATABASE_URL=postgresql://postgres:123456@auth-db:5432/authdb
+      - REDIS_URL=${REDIS_URL}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL}
+  
+  auth-db:
+    container_name: auth-db
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=authdb
+  
+  auth-redis:
+    container_name: auth-redis
+    image: redis:7.2 # Usamos la imagen oficial de Redis
+    restart: always
+    volumes:
+      - redis_data:/data # Persistimos los datos de Redis
+    command: redis-server --appendonly yes # Habilitamos persistencia
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis_data: # Definimos el volumen para Redis
