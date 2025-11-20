@@ -18,7 +18,7 @@ services:
   auth-db:
     container_name: auth-db
     image: postgres:16.2
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./postgres:/var/lib/postgresql/data
     ports:
@@ -31,7 +31,7 @@ services:
   auth-redis:
     container_name: auth-redis
     image: redis:7.2 # Usamos la imagen oficial de Redis
-    restart: always
+    restart: unless-stopped
     volumes:
       - redis_data:/data # Persistimos los datos de Redis
     command: redis-server --appendonly yes # Habilitamos persistencia
