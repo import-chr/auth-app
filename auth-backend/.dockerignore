@@ -1,6 +1,22 @@
 dist/
 node_modules/
+build/
+
 postgres/
 
+prisma/migrations
+prisma/generated
+
+.gitignore
+.git
+
+README.md
+
+docker-compose.yml
+Dockerfile
+.dockerignore
+
 .env
+.env.prod
+.env.template
 .vscode
