@@ -1,21 +1,29 @@
-FROM node:21-alpine3.19
+FROM node:22-alpine3.20 AS base
 
-WORKDIR /usr/src/app
+ENV DIR /app
+WORKDIR $DIR
+ARG NPM_TOKEN
 
-# Copiar archivos de dependencias
-COPY package.json ./
-COPY package-lock.json ./
+FROM base AS dev
+ENV NODE_ENV=development
+ENV CI=true
 
-# Instalar dependencias
-RUN npm install
+RUN npm install -g pnpm@latest-10
 
-# Copiar el resto del proyecto
-COPY . .
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# # Generar cliente de Prisma
-# RUN npx prisma generate
+RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ".npmrc" && \
+    pnpm install --frozen-lockfile && \
+    rm -f .npmrc
 
-# Exponer el puerto
-EXPOSE 3000
+COPY prisma ./prisma/
+COPY prisma.config.ts ./prisma.config.ts
 
-CMD ["sh", "-c", "npx prisma generate && npm run start:dev"]
+COPY tsconfig*.json ./
+COPY src src
+
+RUN pnpm prisma generate
+
+EXPOSE $PORT
+
+CMD ["pnpm", "start:dev"]
