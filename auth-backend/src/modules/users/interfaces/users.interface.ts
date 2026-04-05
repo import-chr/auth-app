@@ -1,4 +1,4 @@
-import { AuthProviderEnum, UserStatusEnum } from '@prisma/client';
+import { AuthProviderEnum, UserStatusEnum } from "prisma/generated/enums";
 
 export interface CreateUserInterface {
   name?: string;
