@@ -55,10 +55,12 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-/auth-backend/generated/prisma
-
 # PostgreSQL
 /auth-backend/postgres
 
 # Test Dir
 /auth-backend/src/modules/test
+
+# Prisma generated
+/auth-backend/prisma/generated
+/auth-backend/generated/prisma
